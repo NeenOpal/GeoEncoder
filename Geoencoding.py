@@ -1,16 +1,17 @@
 """
 Python script for batch geocoding of addresses using the Google Geocoding API.
 This script allows for massive lists of addresses to be geocoded for free by pausing when the 
-geocoder hits the free rate limit set by Google (2500 per day).  If you have an API key for paid
+geocoder hits the free rate limit set by Google (100,000 per day).  If you have an API key for paid
 geocoding from Google, set it in the API key section.
 Addresses for geocoding can be specified in a list of strings "addresses". In this script, addresses
 come from a csv file with a column "Address". Adjust the code to your own requirements as needed.
-After every 500 successul geocode operations, a temporary file with results is recorded in case of 
-script failure / loss of connection later.
 Addresses and data are held in memory, so this script may need to be adjusted to process files line
 by line if you are processing millions of entries.
-Shane Lynn
+Base code : Shane Lynn
 5th November 2016
+
+Customization : Rajiv Jha
+30th August 2018
 """
 
 import pandas as pd
@@ -28,10 +29,10 @@ logger.addHandler(ch)
 #------------------ CONFIGURATION -------------------------------
 
 # Set your Google API key here. 
-# Even if using the free 2500 queries a day, its worth getting an API key since the rate limit is 50 / second.
+# Even if using the free 100,000 queries a day, its worth getting an API key since the rate limit is 100 / second.
 # With API_KEY = None, you will run into a 2 second delay every 10 requests or so.
 # With a "Google Maps Geocoding API" key from https://console.developers.google.com/apis/, 
-# the daily limit will be 2500, but at a much faster rate.
+# the daily limit will be 100,000 , but at a much faster rate.
 # Example: API_KEY = 'AIzaSyC9azed9tLdjpZNjg2_kVePWvMIBq154eA'
 API_KEY = 'ENTERYOURAPIKEYHERE'
 # Backoff time sets how many minutes to wait between google pings when your API limit is hit
@@ -57,8 +58,8 @@ if address_column_name not in data.columns:
 # Make a big list of all of the addresses to be processed.
 addresses = data[address_column_name].tolist()
 
-# **** DEMO DATA / IRELAND SPECIFIC! ****
-# We know that these addresses are in Ireland, and there's a column for county, so add this for accuracy. 
+# **** DEMO DATA / Country[for eg. Sri lanka] SPECIFIC! ****
+# We know that these addresses are in 'Country', and there's a column for country, so add this for accuracy. We have added Srilanka here for our dataset. 
 # (remove this line / alter for your own dataset)
 addresses = (data[address_column_name] + ',' + ' Srilanka').tolist()
 
